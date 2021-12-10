@@ -1,0 +1,43 @@
+{
+  "name": "taco-ws",
+  "version": "1.0.0",
+  "description": "Taco WS",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "cd dist && node index.js",
+    "build": "npx rimraf dist && npx tsc",
+    "lint": "npx eslint --ext .ts ./src",
+    "lint:fix": "npx eslint --ext .ts ./src --fix"
+  },
+  "dependencies": {
+    "@airbrake/node": "^2.1.7",
+    "@prisma/client": "^3.5.0",
+    "cat-loggr": "^1.2.2",
+    "cron": "^1.8.2",
+    "dbots": "^10.0.0",
+    "dotenv": "^10.0.0",
+    "eris": "^0.16.1",
+    "influx": "^5.9.2",
+    "ioredis": "^4.28.1"
+  },
+  "devDependencies": {
+    "@types/cron": "^1.7.3",
+    "@types/ioredis": "^4.28.1",
+    "@types/node": "^16.11.10",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "eslint": "^8.3.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.1",
+    "prisma": "^3.5.0",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trello-talk/Taco.git"
+  },
+  "author": "Snazzah <suggesttosnazzy@gmail.com>",
+  "license": "MIT"
+}
