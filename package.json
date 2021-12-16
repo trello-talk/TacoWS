@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "description": "Taco WS",
   "main": "src/index.js",
+  "repository": "https://github.com/trello-talk/TacoWS",
+  "bugs": {
+    "url": "https://github.com/trello-talk/TacoWS/issues"
+  },
+  "homepage": "https:/tacobot.app/",
+  "author": "Snazzah <suggesttosnazzy@gmail.com>",
+  "license": "MIT",
+  "private": true,
   "scripts": {
     "start": "cd dist && node index.js",
     "build": "npx rimraf dist && npx tsc",
@@ -33,11 +41,5 @@
     "prisma": "^3.5.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/trello-talk/Taco.git"
-  },
-  "author": "Snazzah <suggesttosnazzy@gmail.com>",
-  "license": "MIT"
+  }
 }
