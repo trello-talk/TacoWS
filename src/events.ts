@@ -23,5 +23,23 @@ interface WebhooksUpdateEvent {
 
 export function onWebhooksUpdate({ channelID, guildID }: WebhooksUpdateEvent) {
   logger.info(`Webhooks updated in ${guildID} (channel ${channelID})`);
-  redisClient.del(`webhooks:${guildID}`);
+  redisClient.del(`discord.webhooks:${guildID}`);
+}
+
+export function onChannelCreate(channel: Eris.AnyChannel) {
+  if (channel.type !== 0 && channel.type !== 5) return;
+  logger.info(`Channel ${channel.id} created in ${channel.guild.id}`);
+  redisClient.del(`discord.channels:${channel.guild.id}`);
+}
+
+export function onChannelUpdate(channel: Eris.AnyChannel) {
+  if (channel.type !== 0 && channel.type !== 5) return;
+  logger.info(`Channel ${channel.id} updated in ${channel.guild.id}`);
+  redisClient.del(`discord.channels:${channel.guild.id}`);
+}
+
+export function onChannelDelete(channel: Eris.AnyChannel) {
+  if (channel.type !== 0 && channel.type !== 5) return;
+  logger.info(`Channel ${channel.id} deleted in ${channel.guild.id}`);
+  redisClient.del(`discord.channels:${channel.guild.id}`);
 }

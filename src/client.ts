@@ -1,18 +1,28 @@
 import Eris from 'eris';
-import { onGuildJoin, onGuildLeave, onWebhooksUpdate } from './events';
+import {
+  onChannelCreate,
+  onChannelDelete,
+  onChannelUpdate,
+  onGuildJoin,
+  onGuildLeave,
+  onWebhooksUpdate
+} from './events';
 import { logger } from './logger';
 
 export const client = new Eris.Client(process.env.DISCORD_TOKEN, {
   autoreconnect: true,
   maxShards: 'auto',
-  messageLimit: 1,
+  messageLimit: 0,
   intents: ['guilds', 'guildWebhooks']
 });
 
 // Events
 client.on('ready', () => {
   logger.info('All shards ready.');
-  client.editStatus('online', { name: 'boards scroll by me', type: 3 });
+  client.editStatus(
+    'online',
+    process.env.ALT_STATUS ? { name: 'with my lovely patrons', type: 0 } : { name: 'boards scroll by me', type: 3 }
+  );
 });
 client.on('disconnect', () => logger.warn('All shards Disconnected.'));
 client.on('reconnecting', () => logger.warn('Reconnecting client.'));
@@ -21,6 +31,9 @@ client.on('debug', (message) => logger.debug(message));
 client.on('guildCreate', onGuildJoin);
 client.on('guildDelete', onGuildLeave);
 client.on('webhooksUpdate', onWebhooksUpdate);
+client.on('channelCreate', onChannelCreate);
+client.on('channelUpdate', onChannelUpdate);
+client.on('channelDelete', onChannelDelete);
 
 // Shard Events
 client.on('connect', (id) => logger.info(`Shard ${id} connected.`));
