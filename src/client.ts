@@ -9,7 +9,7 @@ import {
 } from './events';
 import { logger } from './logger';
 
-export const client = new Eris.Client(process.env.DISCORD_TOKEN, {
+export const client = new Eris.Client(process.env.DISCORD_BOT_TOKEN, {
   autoreconnect: true,
   maxShards: 'auto',
   messageLimit: 0,

@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
-import Airbrake from '@airbrake/node';
+import { Notifier } from '@airbrake/node';
 
 let dotenvPath = path.join(process.cwd(), '.env');
 if (path.parse(process.cwd()).name === 'dist') dotenvPath = path.join(process.cwd(), '..', '.env');
@@ -11,9 +11,9 @@ import { client } from './client';
 import { cron as influxCron } from './influx';
 import { client as redisClient } from './redis';
 
-export let airbrake: Airbrake.Notifier | null = null;
+export let airbrake: Notifier | null = null;
 if (process.env.AIRBRAKE_PROJECT_KEY)
-  airbrake = new Airbrake.Notifier({
+  airbrake = new Notifier({
     projectId: parseInt(process.env.AIRBRAKE_PROJECT_ID, 10),
     projectKey: process.env.AIRBRAKE_PROJECT_KEY,
     environment: process.env.AIRBRAKE_ENV,
@@ -34,7 +34,7 @@ process.once('SIGINT', async () => {
 });
 
 export async function start() {
-  if (process.env.INFLUX_DB_NAME) influxCron.start();
+  if (process.env.INFLUX_DB_HOST) influxCron.start();
   await redisClient.connect();
   await client.connect();
   client.editStatus('online', {
@@ -48,3 +48,5 @@ export async function disconnect() {
   redisClient.disconnect();
   influxCron.stop();
 }
+
+start();

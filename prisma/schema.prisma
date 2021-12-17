@@ -15,6 +15,7 @@ model User {
 
 model Webhook {
   id              Int      @id @default(autoincrement())
+  active          Boolean  @default(true)
   guildID         String   @db.VarChar(255)
   createdAt       DateTime @db.Timestamptz(6) @default(now())
   updatedAt       DateTime @db.Timestamptz(6) @updatedAt

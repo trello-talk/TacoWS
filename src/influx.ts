@@ -1,11 +1,11 @@
 import { CronJob } from 'cron';
-import Influx from 'influx';
+import { InfluxDB, FieldType, IPoint } from 'influx';
 import { logger } from './logger';
 import { prisma } from './prisma';
 import { client as erisClient } from './client';
 
-export const client = new Influx.InfluxDB({
-  database: process.env.INFLUX_DB_NAME,
+export const client = new InfluxDB({
+  database: process.env.INFLUX_DB_NAME || 'taco',
   host: process.env.INFLUX_DB_HOST,
   port: parseInt(process.env.INFLUX_DB_PORT, 10),
   username: process.env.INFLUX_DB_USER,
@@ -14,20 +14,20 @@ export const client = new Influx.InfluxDB({
     {
       measurement: 'shards',
       fields: {
-        ms: Influx.FieldType.INTEGER,
-        state: Influx.FieldType.STRING,
-        guilds: Influx.FieldType.INTEGER
+        ms: FieldType.INTEGER,
+        state: FieldType.STRING,
+        guilds: FieldType.INTEGER
       },
       tags: ['bot', 'shard', 'cluster']
     },
     {
       measurement: 'websocket_counts',
       fields: {
-        servers: Influx.FieldType.INTEGER,
-        channels: Influx.FieldType.INTEGER,
-        webhooks: Influx.FieldType.INTEGER,
-        databaseUsers: Influx.FieldType.INTEGER,
-        processMemUsage: Influx.FieldType.FLOAT
+        servers: FieldType.INTEGER,
+        channels: FieldType.INTEGER,
+        webhooks: FieldType.INTEGER,
+        databaseUsers: FieldType.INTEGER,
+        processMemUsage: FieldType.FLOAT
       },
       tags: ['bot', 'cluster']
     }
@@ -37,7 +37,7 @@ export const client = new Influx.InfluxDB({
 export const cron = new CronJob('*/5 * * * *', collect, null, false, 'America/New_York');
 
 async function collect(timestamp = new Date()) {
-  if (!process.env.INFLUX_DB_NAME) return;
+  if (!process.env.INFLUX_DB_HOST) return;
 
   // Get postgres counts
   const dbUserCount = await prisma.user.count();
@@ -47,7 +47,7 @@ async function collect(timestamp = new Date()) {
     bot: process.env.INFLUX_DB_BOT,
     cluster: process.env.INFLUX_DB_CLUSTER
   };
-  const influxPoints: Influx.IPoint[] = [
+  const influxPoints: IPoint[] = [
     {
       measurement: 'websocket_counts',
       tags: {
@@ -88,5 +88,5 @@ async function collect(timestamp = new Date()) {
 
   // Send to influx
   await client.writePoints(influxPoints);
-  logger.info('Sent stats to Influx.');
+  logger.info('Sent stats to InfluxDB.');
 }
