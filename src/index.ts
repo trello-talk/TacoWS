@@ -10,6 +10,7 @@ import { logger } from './logger';
 import { client } from './client';
 import { cron as influxCron } from './influx';
 import { client as redisClient } from './redis';
+import { prisma } from './prisma';
 
 export let airbrake: Notifier | null = null;
 if (process.env.AIRBRAKE_PROJECT_KEY)
@@ -36,6 +37,7 @@ process.once('SIGINT', async () => {
 export async function start() {
   if (process.env.INFLUX_DB_HOST) influxCron.start();
   await redisClient.connect();
+  await prisma.$connect();
   await client.connect();
   client.editStatus('online', {
     name: 'boards scroll by me',
@@ -47,6 +49,7 @@ export async function disconnect() {
   client.disconnect({ reconnect: false });
   redisClient.disconnect();
   influxCron.stop();
+  await prisma.$disconnect();
 }
 
 start();
