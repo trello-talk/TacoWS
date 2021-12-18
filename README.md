@@ -1,4 +1,4 @@
-# Tacosocket (Taco WS)
+# Tacosocket (Taco WS) [![DeepScan grade](https://deepscan.io/api/teams/11934/projects/19517/branches/509041/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=11934&pid=19517&bid=509041)
 The websocket connection to Taco.
 
 The purpose of this is to:
