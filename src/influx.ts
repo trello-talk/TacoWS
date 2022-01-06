@@ -79,10 +79,10 @@ async function collect(timestamp = new Date()) {
       tags: { ...defaultTags, shard: String(shard.id) },
       fields: {
         ms: isFinite(shard.latency) ? shard.latency : 0,
-        state: shard.status,
+        state: shard.status || 'unknown',
         guilds: serverMap[shard.id]
       },
-      timestamp
+      timestamp: timestamp || cron.lastDate()
     })
   );
 
