@@ -67,7 +67,7 @@ async function collect(timestamp = new Date()) {
 
   // Insert shard data
   const serverMap = {};
-  this.client.guilds.map((guild) => {
+  erisClient.guilds.map((guild) => {
     const shardID = guild.shard.id;
     if (serverMap[shardID]) serverMap[shardID] += 1;
     else serverMap[shardID] = 1;
