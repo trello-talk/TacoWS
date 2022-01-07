@@ -39,10 +39,6 @@ export async function start() {
   await redisClient.connect();
   await prisma.$connect();
   await client.connect();
-  client.editStatus('online', {
-    name: 'boards scroll by me',
-    type: 3
-  });
 }
 
 export async function disconnect() {
