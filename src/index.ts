@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import path from 'path';
-import { Notifier } from '@airbrake/node';
+import * as Sentry from '@sentry/node';
+import '@sentry/tracing';
+import { RewriteFrames } from '@sentry/integrations';
 
 let dotenvPath = path.join(process.cwd(), '.env');
 if (path.parse(process.cwd()).name === 'dist') dotenvPath = path.join(process.cwd(), '..', '.env');
@@ -12,14 +14,19 @@ import { cron as influxCron } from './influx';
 import { client as redisClient } from './redis';
 import { prisma } from './prisma';
 
-export let airbrake: Notifier | null = null;
-if (process.env.AIRBRAKE_PROJECT_KEY)
-  airbrake = new Notifier({
-    projectId: parseInt(process.env.AIRBRAKE_PROJECT_ID, 10),
-    projectKey: process.env.AIRBRAKE_PROJECT_KEY,
-    environment: process.env.AIRBRAKE_ENV,
-    keysBlocklist: [process.env.DISCORD_TOKEN, process.env.DATABASE_URL]
-  });
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new RewriteFrames({
+      root: __dirname
+    })
+  ],
+
+  environment: process.env.SENTRY_ENV || process.env.NODE_ENV || 'development',
+  release: `taco-ws@${require('../../package.json').version}`,
+  tracesSampleRate: process.env.SENTRY_SAMPLE_RATE ? parseFloat(process.env.SENTRY_SAMPLE_RATE) : 1.0
+});
 
 // SIGINT & uncaught exceptions
 process.once('uncaughtException', async (err) => {
