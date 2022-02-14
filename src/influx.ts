@@ -1,68 +1,36 @@
+import { InfluxDB, Point } from '@influxdata/influxdb-client';
 import { CronJob } from 'cron';
-import { InfluxDB, FieldType, IPoint } from 'influx';
 import { logger } from './logger';
+import { hostname } from 'os';
 import { prisma } from './prisma';
 import { client as erisClient } from './client';
 
-export const client = new InfluxDB({
-  database: process.env.INFLUX_DB_NAME || 'taco',
-  host: process.env.INFLUX_DB_HOST,
-  port: parseInt(process.env.INFLUX_DB_PORT, 10),
-  username: process.env.INFLUX_DB_USER,
-  password: process.env.INFLUX_DB_PASSWORD,
-  schema: [
-    {
-      measurement: 'shards',
-      fields: {
-        ms: FieldType.INTEGER,
-        state: FieldType.STRING,
-        guilds: FieldType.INTEGER
-      },
-      tags: ['bot', 'shard', 'cluster']
-    },
-    {
-      measurement: 'websocket_counts',
-      fields: {
-        servers: FieldType.INTEGER,
-        channels: FieldType.INTEGER,
-        webhooks: FieldType.INTEGER,
-        databaseUsers: FieldType.INTEGER,
-        processMemUsage: FieldType.FLOAT
-      },
-      tags: ['bot', 'cluster']
-    }
-  ]
-});
+export const client = new InfluxDB({ url: process.env.INFLUX_URL, token: process.env.INFLUX_TOKEN });
 
 export const cron = new CronJob('*/5 * * * *', collect, null, false, 'America/New_York');
 
 async function collect(timestamp = new Date()) {
-  if (!process.env.INFLUX_DB_HOST) return;
+  if (!process.env.INFLUX_URL || !process.env.INFLUX_TOKEN) return;
+  if (!timestamp) timestamp = cron.lastDate();
 
   // Get postgres counts
   const dbUserCount = await prisma.user.count();
   const webhookCount = await prisma.webhook.count();
 
-  const defaultTags = {
-    bot: process.env.INFLUX_DB_BOT,
-    cluster: process.env.INFLUX_DB_CLUSTER
-  };
-  const influxPoints: IPoint[] = [
-    {
-      measurement: 'websocket_counts',
-      tags: {
-        bot: process.env.INFLUX_DB_BOT,
-        cluster: process.env.INFLUX_DB_CLUSTER
-      },
-      fields: {
-        servers: erisClient.guilds.size,
-        channels: erisClient.guilds.reduce((prev, val) => prev + val.channels.size, 0),
-        webhooks: webhookCount,
-        databaseUsers: dbUserCount,
-        processMemUsage: process.memoryUsage().heapUsed / 1000000
-      },
-      timestamp: timestamp || cron.lastDate()
-    }
+  const writeApi = client.getWriteApi(process.env.INFLUX_ORG, process.env.INFLUX_BUCKET, 's');
+  const points = [
+    new Point('webhook_traffic')
+      .tag('server', process.env.SERVER_NAME || hostname())
+      .tag('bot', process.env.BOT_NAME || 'taco')
+      .intField('servers', erisClient.guilds.size)
+      .intField(
+        'channels',
+        erisClient.guilds.reduce((prev, val) => prev + val.channels.size, 0)
+      )
+      .intField('webhooks', webhookCount)
+      .intField('databaseUsers', dbUserCount)
+      .intField('processMemUsage', process.memoryUsage().heapUsed / 1000000)
+      .timestamp(timestamp)
   ];
 
   // Insert shard data
@@ -74,19 +42,24 @@ async function collect(timestamp = new Date()) {
   });
 
   erisClient.shards.map((shard) =>
-    influxPoints.push({
-      measurement: 'shards',
-      tags: { ...defaultTags, shard: String(shard.id) },
-      fields: {
-        ms: isFinite(shard.latency) ? shard.latency : 0,
-        state: shard.status || 'unknown',
-        guilds: serverMap[shard.id]
-      },
-      timestamp: timestamp || cron.lastDate()
-    })
+    points.push(
+      new Point('shards')
+        .tag('server', process.env.SERVER_NAME || hostname())
+        .tag('bot', process.env.BOT_NAME || 'taco')
+        .tag('shard', String(shard.id))
+        .intField('ms', isFinite(shard.latency) ? shard.latency : 0)
+        .stringField('status', shard.status || 'unknown')
+        .intField('guilds', serverMap[shard.id])
+        .timestamp(timestamp)
+    )
   );
 
   // Send to influx
-  await client.writePoints(influxPoints);
-  logger.info('Sent stats to InfluxDB.');
+  try {
+    writeApi.writePoints(points);
+    await writeApi.close();
+    logger.log('Sent stats to Influx.');
+  } catch (e) {
+    logger.error('Error sending stats to Influx.', e);
+  }
 }

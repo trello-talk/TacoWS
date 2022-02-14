@@ -35,7 +35,7 @@ process.once('SIGINT', async () => {
 });
 
 export async function start() {
-  if (process.env.INFLUX_DB_HOST) influxCron.start();
+  if (process.env.INFLUX_URL) influxCron.start();
   await redisClient.connect();
   await prisma.$connect();
   await client.connect();
