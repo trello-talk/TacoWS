@@ -24,7 +24,7 @@ Sentry.init({
   ],
 
   environment: process.env.SENTRY_ENV || process.env.NODE_ENV || 'development',
-  release: `taco-ws@${require('../../package.json').version}`,
+  release: `taco-ws@${require('../package.json').version}`,
   tracesSampleRate: process.env.SENTRY_SAMPLE_RATE ? parseFloat(process.env.SENTRY_SAMPLE_RATE) : 1.0
 });
 
