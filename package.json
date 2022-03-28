@@ -28,7 +28,7 @@
     "dbots": "^11.0.0",
     "dotenv": "^16.0.0",
     "eris": "^0.16.1",
-    "ioredis": "^4.28.1"
+    "ioredis": "^5.0.1"
   },
   "devDependencies": {
     "@types/cron": "^1.7.3",
