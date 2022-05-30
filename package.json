@@ -22,7 +22,7 @@
     "@prisma/client": "^3.6.0",
     "@sentry/integrations": "^7.0.0",
     "@sentry/node": "^7.0.0",
-    "@sentry/tracing": "^6.17.7",
+    "@sentry/tracing": "^7.0.0",
     "cat-loggr": "^1.2.2",
     "cron": "^2.0.0",
     "dbots": "^11.0.0",
