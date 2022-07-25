@@ -1,18 +1,20 @@
+/* eslint-disable import/first */
+import '@sentry/tracing';
+
+import { RewriteFrames } from '@sentry/integrations';
+import * as Sentry from '@sentry/node';
 import dotenv from 'dotenv';
 import path from 'path';
-import * as Sentry from '@sentry/node';
-import '@sentry/tracing';
-import { RewriteFrames } from '@sentry/integrations';
 
 let dotenvPath = path.join(process.cwd(), '.env');
 if (path.parse(process.cwd()).name === 'dist') dotenvPath = path.join(process.cwd(), '..', '.env');
 dotenv.config({ path: dotenvPath });
 
-import { logger } from './logger';
 import { client } from './client';
 import { cron as influxCron } from './influx';
-import { client as redisClient } from './redis';
+import { logger } from './logger';
 import { prisma } from './prisma';
+import { client as redisClient } from './redis';
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -24,6 +26,7 @@ Sentry.init({
   ],
 
   environment: process.env.SENTRY_ENV || process.env.NODE_ENV || 'development',
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   release: `taco-ws@${require('../package.json').version}`,
   tracesSampleRate: process.env.SENTRY_SAMPLE_RATE ? parseFloat(process.env.SENTRY_SAMPLE_RATE) : 1.0
 });

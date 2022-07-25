@@ -1,6 +1,7 @@
 import { Poster } from 'dbots';
-import { logger } from './logger';
+
 import { client } from './client';
+import { logger } from './logger';
 
 export let poster: Poster | null = null;
 

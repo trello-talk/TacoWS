@@ -1,4 +1,5 @@
 import Eris from 'eris';
+
 import { logger } from './logger';
 import { prisma } from './prisma';
 import { client as redisClient } from './redis';

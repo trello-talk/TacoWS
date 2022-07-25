@@ -1,9 +1,10 @@
 import { InfluxDB, Point } from '@influxdata/influxdb-client';
 import { CronJob } from 'cron';
-import { logger } from './logger';
 import { hostname } from 'os';
-import { prisma } from './prisma';
+
 import { client as erisClient } from './client';
+import { logger } from './logger';
+import { prisma } from './prisma';
 
 export const client = new InfluxDB({ url: process.env.INFLUX_URL, token: process.env.INFLUX_TOKEN });
 
