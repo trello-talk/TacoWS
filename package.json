@@ -7,8 +7,12 @@
   "bugs": {
     "url": "https://github.com/trello-talk/TacoWS/issues"
   },
-  "homepage": "https:/tacobot.app/",
-  "author": "Snazzah <suggesttosnazzy@gmail.com>",
+  "homepage": "https://tacobot.app/",
+  "author": {
+    "name": "Snazzah",
+    "email": "me@snazzah.com",
+    "url": "https://snazzah.com/"
+  },
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -18,8 +22,8 @@
     "lint:fix": "npx eslint --ext .ts ./src --fix"
   },
   "dependencies": {
-    "@influxdata/influxdb-client": "^1.27.0",
-    "@prisma/client": "^4.1.0",
+    "@influxdata/influxdb-client": "^1.28.0",
+    "@prisma/client": "^4.1.1",
     "@sentry/integrations": "^7.0.0",
     "@sentry/node": "^7.0.0",
     "@sentry/tracing": "^7.0.0",
@@ -33,8 +37,8 @@
   "devDependencies": {
     "@types/cron": "^2.0.0",
     "@types/ioredis": "^4.28.10",
-    "@types/node": "^18.6.0",
-    "eslint": "^8.20.0",
+    "@types/node": "^18.6.4",
+    "eslint": "^8.21.0",
     "eslint-config-snazzah": "^1.1.0",
     "prisma": "^4.1.0",
     "ts-node": "^10.9.1",
