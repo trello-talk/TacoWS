@@ -19,7 +19,8 @@
     "start": "cd dist && node index.js",
     "build": "npx rimraf dist && npx tsc",
     "lint": "npx eslint --ext .ts ./src",
-    "lint:fix": "npx eslint --ext .ts ./src --fix"
+    "lint:fix": "npx eslint --ext .ts ./src --fix",
+    "generate": "npx prisma generate"
   },
   "dependencies": {
     "@influxdata/influxdb-client": "1.28.0",
