@@ -2,6 +2,7 @@ import Eris from 'eris';
 
 import { onChannelCreate, onChannelDelete, onChannelUpdate, onGuildJoin, onGuildLeave, onWebhooksUpdate } from './events';
 import { logger } from './logger';
+import { start as startPoster } from './poster';
 
 export const client = new Eris.Client(process.env.DISCORD_BOT_TOKEN, {
   autoreconnect: true,
@@ -11,9 +12,10 @@ export const client = new Eris.Client(process.env.DISCORD_BOT_TOKEN, {
 });
 
 // Events
-client.on('ready', () => {
+client.on('ready', async () => {
   logger.info('All shards ready.');
   client.editStatus('online', process.env.ALT_STATUS ? { name: 'with my lovely patrons', type: 0 } : { name: 'boards scroll by me', type: 3 });
+  await startPoster();
 });
 client.on('disconnect', () => logger.warn('All shards Disconnected.'));
 client.on('reconnecting', () => logger.warn('Reconnecting client.'));

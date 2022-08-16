@@ -13,7 +13,7 @@ dotenv.config({ path: dotenvPath });
 import { client } from './client';
 import { cron as influxCron } from './influx';
 import { logger } from './logger';
-import { poster, start as startPoster } from './poster';
+import { poster } from './poster';
 import { prisma } from './prisma';
 import { client as redisClient } from './redis';
 
@@ -50,7 +50,6 @@ export async function start() {
   await redisClient.connect();
   await prisma.$connect();
   await client.connect();
-  await startPoster();
 }
 
 export async function disconnect() {
@@ -58,7 +57,7 @@ export async function disconnect() {
   redisClient.disconnect();
   influxCron.stop();
   await prisma.$disconnect();
-  poster.stopInterval();
+  poster?.stopInterval();
 }
 
 start();
