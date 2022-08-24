@@ -33,7 +33,7 @@
     "dbots": "11.0.0",
     "dotenv": "16.0.1",
     "eris": "0.17.1",
-    "ioredis": "5.2.2"
+    "ioredis": "5.2.3"
   },
   "devDependencies": {
     "@types/cron": "2.0.0",
