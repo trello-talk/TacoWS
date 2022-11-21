@@ -39,7 +39,7 @@
     "@types/cron": "2.0.0",
     "@types/ioredis": "4.28.10",
     "@types/node": "18.11.9",
-    "eslint": "8.27.0",
+    "eslint": "8.28.0",
     "eslint-config-snazzah": "1.2.1",
     "prisma": "4.6.1",
     "ts-node": "10.9.1",
