@@ -17,10 +17,10 @@
   "private": true,
   "scripts": {
     "start": "cd dist && node index.js",
-    "build": "npx rimraf dist && npx tsc",
-    "lint": "npx eslint --ext .ts ./src",
-    "lint:fix": "npx eslint --ext .ts ./src --fix",
-    "generate": "npx prisma generate"
+    "build": "tsc",
+    "lint": "eslint --ext .ts ./src",
+    "lint:fix": "eslint --ext .ts ./src --fix",
+    "generate": "prisma generate"
   },
   "dependencies": {
     "@influxdata/influxdb-client": "1.33.0",
