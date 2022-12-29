@@ -8,7 +8,7 @@ specifiers:
   '@sentry/tracing': 7.28.1
   '@types/cron': 2.0.0
   '@types/ioredis': 4.28.10
-  '@types/node': 18.11.17
+  '@types/node': 18.11.18
   cat-loggr: 1.2.2
   cron: 2.1.0
   dbots: 11.0.0
@@ -37,11 +37,11 @@ dependencies:
 devDependencies:
   '@types/cron': 2.0.0
   '@types/ioredis': 4.28.10
-  '@types/node': 18.11.17
+  '@types/node': 18.11.18
   eslint: 8.30.0
   eslint-config-snazzah: 1.2.1_typescript@4.9.4
   prisma: 4.8.0
-  ts-node: 10.9.1_moeqx3xmzxqxagf2sz6mqkbb7m
+  ts-node: 10.9.1_awa2wsr5thmg3i7jqycphctjfq
   typescript: 4.9.4
 
 packages:
@@ -234,13 +234,13 @@ packages:
     resolution: {integrity: sha512-xZM08fqvwIXgghtPVkSPKNgC+JoMQ2OHazEvyTKnNf7aWu1aB6/4lBbQFrb03Td2cUGG7ITzMv3mFYnMu6xRaQ==}
     dependencies:
       '@types/luxon': 3.1.0
-      '@types/node': 18.11.17
+      '@types/node': 18.11.18
     dev: true
 
   /@types/ioredis/4.28.10:
     resolution: {integrity: sha512-69LyhUgrXdgcNDv7ogs1qXZomnfOEnSmrmMFqKgt1XMJxmoOSG/u3wYy13yACIfKuMJ8IhKgHafDO3sx19zVQQ==}
     dependencies:
-      '@types/node': 18.11.17
+      '@types/node': 18.11.18
     dev: true
 
   /@types/json-schema/7.0.11:
@@ -255,8 +255,8 @@ packages:
     resolution: {integrity: sha512-gCd/HcCgjqSxfMrgtqxCgYk/22NBQfypwFUG7ZAyG/4pqs51WLTcUzVp1hqTbieDYeHS3WoVEh2Yv/2l+7B0Vg==}
     dev: true
 
-  /@types/node/18.11.17:
-    resolution: {integrity: sha512-HJSUJmni4BeDHhfzn6nF0sVmd1SMezP7/4F0Lq+aXzmp2xm9O7WXrUtHW/CHlYVtZUbByEvWidHqRtcJXGF2Ng==}
+  /@types/node/18.11.18:
+    resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
     dev: true
 
   /@types/semver/7.3.13:
@@ -1888,7 +1888,7 @@ packages:
       is-number: 7.0.0
     dev: true
 
-  /ts-node/10.9.1_moeqx3xmzxqxagf2sz6mqkbb7m:
+  /ts-node/10.9.1_awa2wsr5thmg3i7jqycphctjfq:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -1907,7 +1907,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
-      '@types/node': 18.11.17
+      '@types/node': 18.11.18
       acorn: 8.8.1
       acorn-walk: 8.2.0
       arg: 4.1.3
