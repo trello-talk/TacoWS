@@ -16,7 +16,7 @@ specifiers:
   eris: 0.17.1
   eslint: 8.33.0
   eslint-config-snazzah: 1.2.1
-  ioredis: 5.3.0
+  ioredis: 5.3.1
   prisma: 4.9.0
   ts-node: 10.9.1
   typescript: 4.9.5
@@ -32,7 +32,7 @@ dependencies:
   dbots: 11.0.0
   dotenv: 16.0.3
   eris: 0.17.1
-  ioredis: 5.3.0
+  ioredis: 5.3.1
 
 devDependencies:
   '@types/cron': 2.0.0
@@ -1306,8 +1306,8 @@ packages:
       has: 1.0.3
       side-channel: 1.0.4
 
-  /ioredis/5.3.0:
-    resolution: {integrity: sha512-Id9jKHhsILuIZpHc61QkagfVdUj2Rag5GzG1TGEvRNeM7dtTOjICgjC+tvqYxi//PuX2wjQ+Xjva2ONBuf92Pw==}
+  /ioredis/5.3.1:
+    resolution: {integrity: sha512-C+IBcMysM6v52pTLItYMeV4Hz7uriGtoJdz7SSBDX6u+zwSYGirLdQh3L7t/OItWITcw3gTFMjJReYUwS4zihg==}
     engines: {node: '>=12.22.0'}
     dependencies:
       '@ioredis/commands': 1.2.0
