@@ -23,7 +23,7 @@
     "generate": "prisma generate"
   },
   "dependencies": {
-    "@influxdata/influxdb-client": "1.33.1",
+    "@influxdata/influxdb-client": "1.33.2",
     "@prisma/client": "4.11.0",
     "@sentry/integrations": "7.36.0",
     "@sentry/node": "7.36.0",
