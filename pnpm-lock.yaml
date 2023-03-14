@@ -13,7 +13,7 @@ specifiers:
   cron: 2.2.0
   dbots: 11.0.0
   dotenv: 16.0.3
-  eris: 0.17.1
+  eris: 0.17.2
   eslint: 8.35.0
   eslint-config-snazzah: 1.2.1
   ioredis: 5.3.1
@@ -31,7 +31,7 @@ dependencies:
   cron: 2.2.0
   dbots: 11.0.0
   dotenv: 16.0.3
-  eris: 0.17.1
+  eris: 0.17.2
   ioredis: 5.3.1
 
 devDependencies:
@@ -706,8 +706,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /eris/0.17.1:
-    resolution: {integrity: sha512-PexpHusPxViuzcsSM0GQEAgZRJbziFfeeLifc8+ZrvS88UusPieQlUD7pRm28E7m7rN+p+Rt6bf9jGLwD725Zg==}
+  /eris/0.17.2:
+    resolution: {integrity: sha512-OzffDSL81VooFXfRn56ienSg7J6fagoN8WdkmCHjn0B9a4jUA3bVouMztQiaXT54jHV5jaX9D0mJ/b9/0mFoVg==}
     engines: {node: '>=10.4.0'}
     dependencies:
       ws: 8.11.0
