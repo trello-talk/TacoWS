@@ -6,11 +6,11 @@ specifiers:
   '@sentry/integrations': 7.44.2
   '@sentry/node': 7.44.2
   '@sentry/tracing': 7.44.2
-  '@types/cron': 2.0.0
+  '@types/cron': 2.0.1
   '@types/ioredis': 4.28.10
   '@types/node': 18.15.6
   cat-loggr: 1.2.2
-  cron: 2.2.0
+  cron: 2.3.0
   dbots: 11.0.0
   dotenv: 16.0.3
   eris: 0.17.2
@@ -28,14 +28,14 @@ dependencies:
   '@sentry/node': 7.44.2
   '@sentry/tracing': 7.44.2
   cat-loggr: 1.2.2
-  cron: 2.2.0
+  cron: 2.3.0
   dbots: 11.0.0
   dotenv: 16.0.3
   eris: 0.17.2
   ioredis: 5.3.1
 
 devDependencies:
-  '@types/cron': 2.0.0
+  '@types/cron': 2.0.1
   '@types/ioredis': 4.28.10
   '@types/node': 18.15.6
   eslint: 8.36.0
@@ -257,8 +257,8 @@ packages:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
     dev: true
 
-  /@types/cron/2.0.0:
-    resolution: {integrity: sha512-xZM08fqvwIXgghtPVkSPKNgC+JoMQ2OHazEvyTKnNf7aWu1aB6/4lBbQFrb03Td2cUGG7ITzMv3mFYnMu6xRaQ==}
+  /@types/cron/2.0.1:
+    resolution: {integrity: sha512-WHa/1rtNtD2Q/H0+YTTZoty+/5rcE66iAFX2IY+JuUoOACsevYyFkSYu/2vdw+G5LrmO7Lxowrqm0av4k3qWNQ==}
     dependencies:
       '@types/luxon': 3.1.0
       '@types/node': 18.15.6
@@ -620,8 +620,8 @@ packages:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
 
-  /cron/2.2.0:
-    resolution: {integrity: sha512-GPiI3OgMv83XRtEUc2gUdaLvJhO3XbLN288layOBkDTupg0RK5IECNGpkykIMHg+muVR2bxt29b0xvCAcBrjYQ==}
+  /cron/2.3.0:
+    resolution: {integrity: sha512-ZN5HP8zDY41sJolMsbc+GksRATcbvkPKF5wR/qc8FrV4NBVi9ORQa1HmYa5GydaysUB80X9XpRlRkooa5uEtTA==}
     dependencies:
       luxon: 3.2.1
     dev: false
