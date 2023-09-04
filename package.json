@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@influxdata/influxdb-client": "1.33.2",
-    "@prisma/client": "5.1.1",
+    "@prisma/client": "5.2.0",
     "@sentry/integrations": "7.64.0",
     "@sentry/node": "7.64.0",
     "@sentry/tracing": "7.64.0",
@@ -41,7 +41,7 @@
     "@types/node": "18.17.14",
     "eslint": "8.48.0",
     "eslint-config-snazzah": "1.2.1",
-    "prisma": "5.1.1",
+    "prisma": "5.2.0",
     "ts-node": "10.9.1",
     "typescript": "5.2.2"
   }
