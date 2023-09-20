@@ -25,9 +25,9 @@
   "dependencies": {
     "@influxdata/influxdb-client": "1.33.2",
     "@prisma/client": "5.2.0",
-    "@sentry/integrations": "7.64.0",
-    "@sentry/node": "7.64.0",
-    "@sentry/tracing": "7.64.0",
+    "@sentry/integrations": "7.70.0",
+    "@sentry/node": "7.70.0",
+    "@sentry/tracing": "7.70.0",
     "cat-loggr": "1.2.2",
     "cron": "2.4.3",
     "dbots": "11.0.0",
