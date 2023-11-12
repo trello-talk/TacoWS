@@ -10,9 +10,9 @@ export const client = process.env.INFLUX_URL ? new InfluxDB({ url: process.env.I
 
 export const cron = new CronJob('*/5 * * * *', collect, null, false, 'America/New_York');
 
-async function collect(timestamp = new Date()) {
+async function collect() {
   if (!process.env.INFLUX_URL || !process.env.INFLUX_TOKEN) return;
-  if (!timestamp) timestamp = cron.lastDate();
+  const timestamp = cron.lastDate();
 
   // Get postgres counts
   const dbUserCount = await prisma.user.count();
