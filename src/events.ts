@@ -89,6 +89,29 @@ export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
       }
     });
   }
+
+  if (process.env.DISCORD_ENTITLEMENT_WEBHOOK)
+    await fetch(process.env.DISCORD_ENTITLEMENT_WEBHOOK, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        content: `https://discord.com/application-directory/${entitlement.applicationID}/store/${entitlement.skuID}`,
+        embeds: [{
+          title: `Entitlement Created${!entitlement.startsAt ? ' [Test]' : ''}`,
+          color: 0x2ecc71,
+          description: [
+            `SKU: ${entitlement.skuID}`,
+            `User ID: ${entitlement.userID ?? '<none>'}`,
+            `Guild ID: ${entitlement.guildID ?? '<none>'}`,
+            `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}` : '<none>'}`,
+            `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}` : '<none>'}`,
+            `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
+          ].join('\n')
+        }]
+      })
+    }).catch(() => {});
 }
 
 export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
@@ -122,6 +145,29 @@ export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
     console.error(`Error while updating entitlement [${entitlement.id}]`, e);
     return;
   }
+
+  if (process.env.DISCORD_ENTITLEMENT_WEBHOOK)
+    await fetch(process.env.DISCORD_ENTITLEMENT_WEBHOOK, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        content: `https://discord.com/application-directory/${entitlement.applicationID}/store/${entitlement.skuID}`,
+        embeds: [{
+          title: `Entitlement Updated${!entitlement.startsAt ? ' [Test]' : ''}`,
+          color: 0xe67e22,
+          description: [
+            `SKU: ${entitlement.skuID}`,
+            `User ID: ${entitlement.userID ?? '<none>'}`,
+            `Guild ID: ${entitlement.guildID ?? '<none>'}`,
+            `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}` : '<none>'}`,
+            `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}` : '<none>'}`,
+            `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
+          ].join('\n')
+        }]
+      })
+    }).catch(() => {});
 }
 
 export async function onEntitlementDelete(entitlement: Eris.Entitlement) {
@@ -140,6 +186,27 @@ export async function onEntitlementDelete(entitlement: Eris.Entitlement) {
     console.error(`Error while deleting entitlement [${entitlement.id}]`, e);
     return;
   }
+
+  if (process.env.DISCORD_ENTITLEMENT_WEBHOOK)
+    await fetch(process.env.DISCORD_ENTITLEMENT_WEBHOOK, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        content: `https://discord.com/application-directory/${entitlement.applicationID}/store/${entitlement.skuID}`,
+        embeds: [{
+          title: `Entitlement Deleted${!entitlement.startsAt ? ' [Test]' : ''}`,
+          color: 0xe74c3c,
+          description: [
+            `SKU: ${entitlement.skuID}`,
+            `User ID: ${entitlement.userID ?? '<none>'}`,
+            `Guild ID: ${entitlement.guildID ?? '<none>'}`,
+            `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
+          ].join('\n')
+        }]
+      })
+    }).catch(() => {});
 }
 
 async function updateGuildBenefits(guildId: string) {
