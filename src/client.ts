@@ -5,16 +5,17 @@ import { logger } from './logger';
 import { start as startPoster } from './poster';
 
 export const client = new Eris.Client(process.env.DISCORD_BOT_TOKEN, {
-  autoreconnect: true,
-  maxShards: 'auto',
-  messageLimit: 0,
-  intents: ['guilds', 'guildWebhooks']
+  gateway: {
+    maxShards: 'auto',
+    intents: ['guilds', 'guildWebhooks']
+  },
+  messageLimit: 0
 });
 
 // Events
 client.on('ready', async () => {
   logger.info('All shards ready.');
-  client.editStatus('online', process.env.ALT_STATUS ? { name: 'with my lovely patrons', type: 0 } : { name: 'boards scroll by me', type: 3 });
+  client.editStatus('online', { type: 4, name: 'taco', state: 'Watching Trello boards • tacobot.app' });
   await startPoster();
 });
 client.on('disconnect', () => logger.warn('All shards Disconnected.'));
