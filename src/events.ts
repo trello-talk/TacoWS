@@ -10,12 +10,13 @@ export function onGuildJoin(guild: Eris.Guild) {
 }
 
 export async function onGuildLeave(guild: Eris.Guild) {
-  logger.info(`Left guild ${guild.name} (${guild.id})`);
+  logger.info(`Left guild ${guild.name} (${guild.id}, unavailable=${guild.unavailable})`);
   // deactivate guild webhooks
-  await prisma.webhook.updateMany({
-    where: { guildID: guild.id },
-    data: { active: false }
-  });
+  if (!guild.unavailable)
+    await prisma.webhook.updateMany({
+      where: { guildID: guild.id },
+      data: { active: false }
+    });
 }
 
 interface WebhooksUpdateEvent {
