@@ -46,6 +46,8 @@ export function onChannelDelete(channel: Eris.AnyChannel) {
   redisClient.del(`discord.channels:${channel.guild.id}`);
 }
 
+const ENTITLEMENTS_ENABLED = !!process.env.DISCORD_SKU_TIER_1 && !!process.env.DISCORD_SKU_TIER_2;
+
 export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
   logger.info(`Entitlement ${entitlement.id} created (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID})`);
 
@@ -63,7 +65,7 @@ export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
   });
 
   // Apply entitlement
-  if ((entitlement.skuID === process.env.DISCORD_SKU_TIER_1 || entitlement.skuID === process.env.DISCORD_SKU_TIER_2) && entitlement.guildID && dbEntitlement.active) {
+  if ((entitlement.skuID === process.env.DISCORD_SKU_TIER_1 || entitlement.skuID === process.env.DISCORD_SKU_TIER_2) && entitlement.guildID && dbEntitlement.active && ENTITLEMENTS_ENABLED) {
     const maxWebhooks = entitlement.skuID === process.env.DISCORD_SKU_TIER_2 ? 200 : 20;
     logger.info(`Benefits for ${entitlement.guildID} updated (maxWebhooks=${maxWebhooks})`);
     await prisma.server.upsert({
@@ -104,7 +106,7 @@ export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
     }
   });
 
-  if (!dbEntitlement.active && dbEntitlement.guildId) await updateGuildBenefits(dbEntitlement.guildId);
+  if (!dbEntitlement.active && dbEntitlement.guildId && ENTITLEMENTS_ENABLED) await updateGuildBenefits(dbEntitlement.guildId);
 }
 
 export async function onEntitlementDelete(entitlement: Eris.Entitlement) {
@@ -116,7 +118,7 @@ export async function onEntitlementDelete(entitlement: Eris.Entitlement) {
     }
   });
 
-  if (dbEntitlement.guildId) await updateGuildBenefits(dbEntitlement.guildId);
+  if (dbEntitlement.guildId && ENTITLEMENTS_ENABLED) await updateGuildBenefits(dbEntitlement.guildId);
 }
 
 async function updateGuildBenefits(guildId: string) {
