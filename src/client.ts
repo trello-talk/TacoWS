@@ -4,7 +4,7 @@ import { onChannelCreate, onChannelDelete, onChannelUpdate, onEntitlementCreate,
 import { logger } from './logger';
 import { start as startPoster } from './poster';
 
-export const client = new Eris.Client(process.env.DISCORD_BOT_TOKEN, {
+export const client = new Eris.Client(`Bot ${process.env.DISCORD_BOT_TOKEN}`, {
   gateway: {
     maxShards: 'auto',
     intents: ['guilds', 'guildWebhooks']

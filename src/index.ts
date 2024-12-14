@@ -46,10 +46,15 @@ process.once('SIGINT', async () => {
 });
 
 export async function start() {
+  logger.info('Starting...');
   if (process.env.INFLUX_URL) influxCron.start();
+  logger.info('Connecting to Redis...');
   await redisClient.connect();
+  logger.info('Connecting to db...');
   await prisma.$connect();
+  logger.info('Connecting to Discord...');
   await client.connect();
+  logger.info('Ready!');
 }
 
 export async function disconnect() {
