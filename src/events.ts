@@ -60,7 +60,7 @@ export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
       guildId: entitlement.guildID,
       userId: entitlement.userID,
       active: entitlement.endsAt ? Date.now() < entitlement.endsAt : true,
-      createdAt: new Date(entitlement.startsAt),
+      startsAt: entitlement.startsAt ? new Date(entitlement.startsAt) : null,
       endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
     }
   });
@@ -87,12 +87,14 @@ export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
 export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
   logger.info(`Entitlement ${entitlement.id} updated (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID})`);
 
+  const active = entitlement.endsAt ? Date.now() < entitlement.endsAt : true;
   const dbEntitlement = await prisma.discordEntitlement.upsert({
     where: {
       id: entitlement.id
     },
     update: {
-      active: entitlement.endsAt ? Date.now() < entitlement.endsAt : true,
+      active,
+      startsAt: entitlement.startsAt ? new Date(entitlement.startsAt) : null,
       endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
     },
     create: {
@@ -101,8 +103,8 @@ export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
       type: entitlement.type,
       guildId: entitlement.guildID,
       userId: entitlement.userID,
-      active: entitlement.endsAt ? Date.now() < entitlement.endsAt : true,
-      createdAt: new Date(entitlement.startsAt),
+      active,
+      startsAt: entitlement.startsAt ? new Date(entitlement.startsAt) : null,
       endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
     }
   });
