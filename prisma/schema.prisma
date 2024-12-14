@@ -13,6 +13,21 @@ model User {
   @@map("users")
 }
 
+model Server {
+  id            Int      @id @default(autoincrement())
+  serverID      String   @unique @db.VarChar(255)
+  bannedFromUse Boolean  @default(false)
+  banReason     String?  @db.VarChar(255)
+  locale        String?  @db.VarChar(255)
+  trelloRole    String?  @db.VarChar(255)
+  prefix        String?  @db.VarChar(255)
+  maxWebhooks   Int      @default(5)
+  createdAt     DateTime @db.Timestamptz(6) @default(now())
+  updatedAt     DateTime @db.Timestamptz(6) @updatedAt
+
+  @@map("servers")
+}
+
 model Webhook {
   id              Int      @id @default(autoincrement())
   active          Boolean  @default(true)
@@ -21,4 +36,18 @@ model Webhook {
   updatedAt       DateTime @db.Timestamptz(6) @updatedAt
 
   @@map("webhooks")
+}
+
+model DiscordEntitlement {
+  id              String    @id
+  userId          String?
+  guildId         String?
+  skuId           String
+  type            Int
+  active          Boolean   @default(false)
+  createdAt       DateTime  @db.Timestamptz(6) @default(now())
+  updatedAt       DateTime  @db.Timestamptz(6) @updatedAt
+  endsAt          DateTime? @db.Timestamptz(6)
+
+  @@map("discord_entitlement")
 }

@@ -1,3 +1,4 @@
+import { CronJob } from 'cron';
 import Eris from 'eris';
 
 import { logger } from './logger';
@@ -8,10 +9,10 @@ export function onGuildJoin(guild: Eris.Guild) {
   logger.info(`Joined guild ${guild.name} (${guild.id})`);
 }
 
-export function onGuildLeave(guild: Eris.Guild) {
+export async function onGuildLeave(guild: Eris.Guild) {
   logger.info(`Left guild ${guild.name} (${guild.id})`);
   // deactivate guild webhooks
-  prisma.webhook.updateMany({
+  await prisma.webhook.updateMany({
     where: { guildID: guild.id },
     data: { active: false }
   });
@@ -29,18 +30,167 @@ export function onWebhooksUpdate({ channelID, guildID }: WebhooksUpdateEvent) {
 
 export function onChannelCreate(channel: Eris.AnyChannel) {
   if (channel.type !== 0 && channel.type !== 5) return;
-  logger.info(`Channel ${channel.id} created in ${channel.guild.id}`);
+  logger.debug(`Channel ${channel.id} created in ${channel.guild.id}`);
   redisClient.del(`discord.channels:${channel.guild.id}`);
 }
 
 export function onChannelUpdate(channel: Eris.AnyChannel) {
   if (channel.type !== 0 && channel.type !== 5) return;
-  logger.info(`Channel ${channel.id} updated in ${channel.guild.id}`);
+  logger.debug(`Channel ${channel.id} updated in ${channel.guild.id}`);
   redisClient.del(`discord.channels:${channel.guild.id}`);
 }
 
 export function onChannelDelete(channel: Eris.AnyChannel) {
   if (channel.type !== 0 && channel.type !== 5) return;
-  logger.info(`Channel ${channel.id} deleted in ${channel.guild.id}`);
+  logger.debug(`Channel ${channel.id} deleted in ${channel.guild.id}`);
   redisClient.del(`discord.channels:${channel.guild.id}`);
+}
+
+export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
+  logger.info(`Entitlement ${entitlement.id} created (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID})`);
+
+  const dbEntitlement = await prisma.discordEntitlement.create({
+    data: {
+      id: entitlement.id,
+      skuId: entitlement.skuID,
+      type: entitlement.type,
+      guildId: entitlement.guildID,
+      userId: entitlement.userID,
+      active: entitlement.endsAt ? Date.now() < entitlement.endsAt : true,
+      createdAt: new Date(entitlement.startsAt),
+      endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
+    }
+  });
+
+  // Apply entitlement
+  if ((entitlement.skuID === process.env.DISCORD_SKU_TIER_1 || entitlement.skuID === process.env.DISCORD_SKU_TIER_2) && entitlement.guildID && dbEntitlement.active) {
+    const maxWebhooks = entitlement.skuID === process.env.DISCORD_SKU_TIER_2 ? 200 : 20;
+    logger.info(`Benefits for ${entitlement.guildID} updated (maxWebhooks=${maxWebhooks})`);
+    await prisma.server.upsert({
+      where: {
+        serverID: entitlement.guildID
+      },
+      create: {
+        serverID: entitlement.guildID,
+        maxWebhooks
+      },
+      update: {
+        maxWebhooks
+      }
+    });
+  }
+}
+
+export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
+  logger.info(`Entitlement ${entitlement.id} updated (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID})`);
+
+  const dbEntitlement = await prisma.discordEntitlement.upsert({
+    where: {
+      id: entitlement.id
+    },
+    update: {
+      active: entitlement.endsAt ? Date.now() < entitlement.endsAt : true,
+      endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
+    },
+    create: {
+      id: entitlement.id,
+      skuId: entitlement.skuID,
+      type: entitlement.type,
+      guildId: entitlement.guildID,
+      userId: entitlement.userID,
+      active: entitlement.endsAt ? Date.now() < entitlement.endsAt : true,
+      createdAt: new Date(entitlement.startsAt),
+      endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
+    }
+  });
+
+  if (!dbEntitlement.active && dbEntitlement.guildId) await updateGuildBenefits(dbEntitlement.guildId);
+}
+
+export async function onEntitlementDelete(entitlement: Eris.Entitlement) {
+  logger.info(`Entitlement ${entitlement.id} deleted (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID})`);
+
+  const dbEntitlement = await prisma.discordEntitlement.delete({
+    where: {
+      id: entitlement.id
+    }
+  });
+
+  if (dbEntitlement.guildId) await updateGuildBenefits(dbEntitlement.guildId);
+}
+
+async function updateGuildBenefits(guildId: string) {
+  const now = new Date();
+  const otherEntitlements = await prisma.discordEntitlement.findMany({
+    where: {
+      OR: [
+        {
+          guildId,
+          active: true,
+          endsAt: { lt: now }
+        },
+        {
+          guildId,
+          active: true,
+          endsAt: null
+        }
+      ]
+    }
+  });
+
+  const maxWebhooks =
+    otherEntitlements.find((e) => e.skuId === process.env.DISCORD_SKU_TIER_2) ? 200 :
+    otherEntitlements.find((e) => e.skuId === process.env.DISCORD_SKU_TIER_1) ? 20 :
+    5;
+
+  logger.info(`Benefits for ${guildId} updated (maxWebhooks=${maxWebhooks})`);
+  await prisma.server.upsert({
+    where: {
+      serverID: guildId
+    },
+    create: {
+      serverID: guildId,
+      maxWebhooks
+    },
+    update: {
+      maxWebhooks
+    }
+  });
+
+  // Restrict webhooks
+  const webhooks = await prisma.webhook.findMany({
+    take: maxWebhooks,
+    where: { guildID: guildId },
+    orderBy: [{ createdAt: 'asc' }]
+  });
+  await prisma.webhook.updateMany({
+    where: {
+      guildID: guildId,
+      id: { notIn: webhooks.map((w) => w.id) }
+    },
+    data: { active: false }
+  });
+}
+
+const entitlementCron = new CronJob('*/5 * * * *', onEntitlementCron, null, true, 'America/New_York');
+
+async function onEntitlementCron() {
+  const expiredEntitlements = await prisma.discordEntitlement.findMany({
+    where: {
+      active: true,
+      endsAt: { gte: new Date() }
+    }
+  });
+  await prisma.discordEntitlement.updateMany({
+    where: {
+      active: true,
+      id: { in: expiredEntitlements.map((e) => e.id) }
+    },
+    data: { active: false }
+  });
+  const guildsToUpdate: string[] = [...new Set(expiredEntitlements.map((e) => e.guildId))];
+
+  for (const guildId of guildsToUpdate) {
+    if (guildId) await updateGuildBenefits(guildId);
+  }
 }

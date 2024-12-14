@@ -1,6 +1,6 @@
 import Eris from 'eris';
 
-import { onChannelCreate, onChannelDelete, onChannelUpdate, onGuildJoin, onGuildLeave, onWebhooksUpdate } from './events';
+import { onChannelCreate, onChannelDelete, onChannelUpdate, onEntitlementCreate, onEntitlementDelete, onEntitlementUpdate, onGuildJoin, onGuildLeave, onWebhooksUpdate } from './events';
 import { logger } from './logger';
 import { start as startPoster } from './poster';
 
@@ -28,6 +28,9 @@ client.on('webhooksUpdate', onWebhooksUpdate);
 client.on('channelCreate', onChannelCreate);
 client.on('channelUpdate', onChannelUpdate);
 client.on('channelDelete', onChannelDelete);
+client.on('entitlementCreate', onEntitlementCreate);
+client.on('entitlementUpdate', onEntitlementUpdate);
+client.on('entitlementDelete', onEntitlementDelete);
 
 // Shard Events
 client.on('connect', (id) => logger.info(`Shard ${id} connected.`));
