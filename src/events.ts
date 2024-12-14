@@ -50,23 +50,30 @@ export function onChannelDelete(channel: Eris.AnyChannel) {
 const ENTITLEMENTS_ENABLED = !!process.env.DISCORD_SKU_TIER_1 && !!process.env.DISCORD_SKU_TIER_2;
 
 export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
-  logger.info(`Entitlement ${entitlement.id} created (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID})`);
+  logger.info(`Entitlement ${entitlement.id} created (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID}, type=${entitlement.type})`);
+  const active = entitlement.endsAt ? Date.now() < entitlement.endsAt : true;
 
-  const dbEntitlement = await prisma.discordEntitlement.create({
-    data: {
-      id: entitlement.id,
-      skuId: entitlement.skuID,
-      type: entitlement.type,
-      guildId: entitlement.guildID,
-      userId: entitlement.userID,
-      active: entitlement.endsAt ? Date.now() < entitlement.endsAt : true,
-      startsAt: entitlement.startsAt ? new Date(entitlement.startsAt) : null,
-      endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
-    }
-  });
+  try {
+    await prisma.discordEntitlement.create({
+      data: {
+        id: entitlement.id,
+        skuId: entitlement.skuID,
+        type: entitlement.type,
+        guildId: entitlement.guildID,
+        userId: entitlement.userID,
+        active,
+        startsAt: entitlement.startsAt ? new Date(entitlement.startsAt) : null,
+        endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
+      }
+    });
+  } catch (e) {
+    if (!entitlement.startsAt) return;
+    console.error(`Error while handling new entitlement [${entitlement.id}]`, e);
+    return;
+  }
 
   // Apply entitlement
-  if ((entitlement.skuID === process.env.DISCORD_SKU_TIER_1 || entitlement.skuID === process.env.DISCORD_SKU_TIER_2) && entitlement.guildID && dbEntitlement.active && ENTITLEMENTS_ENABLED) {
+  if ((entitlement.skuID === process.env.DISCORD_SKU_TIER_1 || entitlement.skuID === process.env.DISCORD_SKU_TIER_2) && entitlement.guildID && active && ENTITLEMENTS_ENABLED) {
     const maxWebhooks = entitlement.skuID === process.env.DISCORD_SKU_TIER_2 ? 200 : 20;
     logger.info(`Benefits for ${entitlement.guildID} updated (maxWebhooks=${maxWebhooks})`);
     await prisma.server.upsert({
@@ -85,43 +92,54 @@ export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
 }
 
 export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
-  logger.info(`Entitlement ${entitlement.id} updated (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID})`);
+  logger.info(`Entitlement ${entitlement.id} updated (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID}, type=${entitlement.type})`);
 
   const active = entitlement.endsAt ? Date.now() < entitlement.endsAt : true;
-  const dbEntitlement = await prisma.discordEntitlement.upsert({
-    where: {
-      id: entitlement.id
-    },
-    update: {
-      active,
-      startsAt: entitlement.startsAt ? new Date(entitlement.startsAt) : null,
-      endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
-    },
-    create: {
-      id: entitlement.id,
-      skuId: entitlement.skuID,
-      type: entitlement.type,
-      guildId: entitlement.guildID,
-      userId: entitlement.userID,
-      active,
-      startsAt: entitlement.startsAt ? new Date(entitlement.startsAt) : null,
-      endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
-    }
-  });
-
-  if (!dbEntitlement.active && dbEntitlement.guildId && ENTITLEMENTS_ENABLED) await updateGuildBenefits(dbEntitlement.guildId);
+  try {
+    const dbEntitlement = await prisma.discordEntitlement.upsert({
+      where: {
+        id: entitlement.id
+      },
+      update: {
+        active,
+        startsAt: entitlement.startsAt ? new Date(entitlement.startsAt) : null,
+        endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
+      },
+      create: {
+        id: entitlement.id,
+        skuId: entitlement.skuID,
+        type: entitlement.type,
+        guildId: entitlement.guildID,
+        userId: entitlement.userID,
+        active,
+        startsAt: entitlement.startsAt ? new Date(entitlement.startsAt) : null,
+        endsAt: entitlement.endsAt ? new Date(entitlement.endsAt) : null
+      }
+    });
+    if (!dbEntitlement.active && dbEntitlement.guildId && ENTITLEMENTS_ENABLED) await updateGuildBenefits(dbEntitlement.guildId);
+  } catch (e) {
+    if (!entitlement.startsAt) return;
+    console.error(`Error while updating entitlement [${entitlement.id}]`, e);
+    return;
+  }
 }
 
 export async function onEntitlementDelete(entitlement: Eris.Entitlement) {
-  logger.info(`Entitlement ${entitlement.id} deleted (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID})`);
+  logger.info(`Entitlement ${entitlement.id} deleted (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID}, type=${entitlement.type})`);
 
-  const dbEntitlement = await prisma.discordEntitlement.delete({
-    where: {
-      id: entitlement.id
-    }
-  });
+  try {
+    const dbEntitlement = await prisma.discordEntitlement.delete({
+      where: {
+        id: entitlement.id
+      }
+    });
 
-  if (dbEntitlement.guildId && ENTITLEMENTS_ENABLED) await updateGuildBenefits(dbEntitlement.guildId);
+    if (dbEntitlement.guildId && ENTITLEMENTS_ENABLED) await updateGuildBenefits(dbEntitlement.guildId);
+  } catch (e) {
+    if (!entitlement.startsAt) return;
+    console.error(`Error while deleting entitlement [${entitlement.id}]`, e);
+    return;
+  }
 }
 
 async function updateGuildBenefits(guildId: string) {
