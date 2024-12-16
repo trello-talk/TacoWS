@@ -113,8 +113,8 @@ export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
               `SKU: ${entitlement.skuID}`,
               `User ID: ${entitlement.userID ?? '<none>'}`,
               `Guild ID: ${entitlement.guildID ?? '<none>'}`,
-              `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}` : '<none>'}`,
-              `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}` : '<none>'}`,
+              `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}:F>` : '<none>'}`,
+              `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}:F>` : '<none>'}`,
               `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
             ].join('\n')
           }
@@ -173,8 +173,8 @@ export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
               `SKU: ${entitlement.skuID}`,
               `User ID: ${entitlement.userID ?? '<none>'}`,
               `Guild ID: ${entitlement.guildID ?? '<none>'}`,
-              `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}` : '<none>'}`,
-              `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}` : '<none>'}`,
+              `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}:F>` : '<none>'}`,
+              `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}:F>` : '<none>'}`,
               `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
             ].join('\n')
           }
