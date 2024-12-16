@@ -50,7 +50,9 @@ export function onChannelDelete(channel: Eris.AnyChannel) {
 const ENTITLEMENTS_ENABLED = !!process.env.DISCORD_SKU_TIER_1 && !!process.env.DISCORD_SKU_TIER_2;
 
 export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
-  logger.info(`Entitlement ${entitlement.id} created (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID}, type=${entitlement.type})`);
+  logger.info(
+    `Entitlement ${entitlement.id} created (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID}, type=${entitlement.type})`
+  );
   const active = entitlement.endsAt ? Date.now() < entitlement.endsAt : true;
 
   try {
@@ -73,7 +75,12 @@ export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
   }
 
   // Apply entitlement
-  if ((entitlement.skuID === process.env.DISCORD_SKU_TIER_1 || entitlement.skuID === process.env.DISCORD_SKU_TIER_2) && entitlement.guildID && active && ENTITLEMENTS_ENABLED) {
+  if (
+    (entitlement.skuID === process.env.DISCORD_SKU_TIER_1 || entitlement.skuID === process.env.DISCORD_SKU_TIER_2) &&
+    entitlement.guildID &&
+    active &&
+    ENTITLEMENTS_ENABLED
+  ) {
     const maxWebhooks = entitlement.skuID === process.env.DISCORD_SKU_TIER_2 ? 200 : 20;
     logger.info(`Benefits for ${entitlement.guildID} updated (maxWebhooks=${maxWebhooks})`);
     await prisma.server.upsert({
@@ -98,24 +105,28 @@ export async function onEntitlementCreate(entitlement: Eris.Entitlement) {
       },
       body: JSON.stringify({
         content: `https://discord.com/application-directory/${entitlement.applicationID}/store/${entitlement.skuID}`,
-        embeds: [{
-          title: `Entitlement Created${!entitlement.startsAt ? ' [Test]' : ''}`,
-          color: 0x2ecc71,
-          description: [
-            `SKU: ${entitlement.skuID}`,
-            `User ID: ${entitlement.userID ?? '<none>'}`,
-            `Guild ID: ${entitlement.guildID ?? '<none>'}`,
-            `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}` : '<none>'}`,
-            `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}` : '<none>'}`,
-            `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
-          ].join('\n')
-        }]
+        embeds: [
+          {
+            title: `Entitlement Created${!entitlement.startsAt ? ' [Test]' : ''}`,
+            color: 0x2ecc71,
+            description: [
+              `SKU: ${entitlement.skuID}`,
+              `User ID: ${entitlement.userID ?? '<none>'}`,
+              `Guild ID: ${entitlement.guildID ?? '<none>'}`,
+              `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}` : '<none>'}`,
+              `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}` : '<none>'}`,
+              `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
+            ].join('\n')
+          }
+        ]
       })
     }).catch(() => {});
 }
 
 export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
-  logger.info(`Entitlement ${entitlement.id} updated (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID}, type=${entitlement.type})`);
+  logger.info(
+    `Entitlement ${entitlement.id} updated (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID}, type=${entitlement.type})`
+  );
 
   const active = entitlement.endsAt ? Date.now() < entitlement.endsAt : true;
   try {
@@ -154,24 +165,28 @@ export async function onEntitlementUpdate(entitlement: Eris.Entitlement) {
       },
       body: JSON.stringify({
         content: `https://discord.com/application-directory/${entitlement.applicationID}/store/${entitlement.skuID}`,
-        embeds: [{
-          title: `Entitlement Updated${!entitlement.startsAt ? ' [Test]' : ''}`,
-          color: 0xe67e22,
-          description: [
-            `SKU: ${entitlement.skuID}`,
-            `User ID: ${entitlement.userID ?? '<none>'}`,
-            `Guild ID: ${entitlement.guildID ?? '<none>'}`,
-            `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}` : '<none>'}`,
-            `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}` : '<none>'}`,
-            `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
-          ].join('\n')
-        }]
+        embeds: [
+          {
+            title: `Entitlement Updated${!entitlement.startsAt ? ' [Test]' : ''}`,
+            color: 0xe67e22,
+            description: [
+              `SKU: ${entitlement.skuID}`,
+              `User ID: ${entitlement.userID ?? '<none>'}`,
+              `Guild ID: ${entitlement.guildID ?? '<none>'}`,
+              `Starts At: ${entitlement.startsAt ? `<t:${Math.round(new Date(entitlement.startsAt).valueOf() / 1000)}` : '<none>'}`,
+              `Ends At: ${entitlement.endsAt ? `<t:${Math.round(new Date(entitlement.endsAt).valueOf() / 1000)}` : '<none>'}`,
+              `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
+            ].join('\n')
+          }
+        ]
       })
     }).catch(() => {});
 }
 
 export async function onEntitlementDelete(entitlement: Eris.Entitlement) {
-  logger.info(`Entitlement ${entitlement.id} deleted (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID}, type=${entitlement.type})`);
+  logger.info(
+    `Entitlement ${entitlement.id} deleted (guild=${entitlement.guildID}, user=${entitlement.userID}, sku=${entitlement.skuID}, type=${entitlement.type})`
+  );
 
   try {
     const dbEntitlement = await prisma.discordEntitlement.delete({
@@ -195,16 +210,18 @@ export async function onEntitlementDelete(entitlement: Eris.Entitlement) {
       },
       body: JSON.stringify({
         content: `https://discord.com/application-directory/${entitlement.applicationID}/store/${entitlement.skuID}`,
-        embeds: [{
-          title: `Entitlement Deleted${!entitlement.startsAt ? ' [Test]' : ''}`,
-          color: 0xe74c3c,
-          description: [
-            `SKU: ${entitlement.skuID}`,
-            `User ID: ${entitlement.userID ?? '<none>'}`,
-            `Guild ID: ${entitlement.guildID ?? '<none>'}`,
-            `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
-          ].join('\n')
-        }]
+        embeds: [
+          {
+            title: `Entitlement Deleted${!entitlement.startsAt ? ' [Test]' : ''}`,
+            color: 0xe74c3c,
+            description: [
+              `SKU: ${entitlement.skuID}`,
+              `User ID: ${entitlement.userID ?? '<none>'}`,
+              `Guild ID: ${entitlement.guildID ?? '<none>'}`,
+              `Type: ${Eris.Constants.EntitlementTypes[entitlement.type] ?? '<unknown>'} (${entitlement.type})`
+            ].join('\n')
+          }
+        ]
       })
     }).catch(() => {});
 }
@@ -228,10 +245,11 @@ async function updateGuildBenefits(guildId: string) {
     }
   });
 
-  const maxWebhooks =
-    otherEntitlements.find((e) => e.skuId === process.env.DISCORD_SKU_TIER_2) ? 200 :
-    otherEntitlements.find((e) => e.skuId === process.env.DISCORD_SKU_TIER_1) ? 20 :
-    5;
+  const maxWebhooks = otherEntitlements.find((e) => e.skuId === process.env.DISCORD_SKU_TIER_2)
+    ? 200
+    : otherEntitlements.find((e) => e.skuId === process.env.DISCORD_SKU_TIER_1)
+      ? 20
+      : 5;
 
   logger.info(`Benefits for ${guildId} updated (maxWebhooks=${maxWebhooks})`);
   await prisma.server.upsert({
@@ -262,7 +280,7 @@ async function updateGuildBenefits(guildId: string) {
   });
 }
 
-const entitlementCron = new CronJob('*/5 * * * *', onEntitlementCron, null, true, 'America/New_York');
+export const entitlementCron = new CronJob('*/5 * * * *', onEntitlementCron, null, true, 'America/New_York');
 
 async function onEntitlementCron() {
   const expiredEntitlements = await prisma.discordEntitlement.findMany({

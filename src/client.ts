@@ -1,6 +1,16 @@
 import Eris from 'eris';
 
-import { onChannelCreate, onChannelDelete, onChannelUpdate, onEntitlementCreate, onEntitlementDelete, onEntitlementUpdate, onGuildJoin, onGuildLeave, onWebhooksUpdate } from './events';
+import {
+  onChannelCreate,
+  onChannelDelete,
+  onChannelUpdate,
+  onEntitlementCreate,
+  onEntitlementDelete,
+  onEntitlementUpdate,
+  onGuildJoin,
+  onGuildLeave,
+  onWebhooksUpdate
+} from './events';
 import { logger } from './logger';
 import { start as startPoster } from './poster';
 
