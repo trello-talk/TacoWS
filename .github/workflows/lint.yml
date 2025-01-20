@@ -13,8 +13,6 @@ on:
       - "package.json"
       - "pnpm-lock.yaml"
   pull_request:
-    tags:
-      - '!*'
     branches:
       - '*'
   workflow_dispatch:
@@ -36,7 +34,7 @@ jobs:
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 8
+          version: 9
           run_install: false
 
       - name: Get pnpm store directory
