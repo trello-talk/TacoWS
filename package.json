@@ -35,7 +35,7 @@
     "cat-loggr": "1.2.2",
     "cron": "3.1.6",
     "dbots": "11.0.0",
-    "dotenv": "16.3.1",
+    "dotenv": "16.4.7",
     "eris": "https://github.com/projectdysnomia/dysnomia#dev",
     "ioredis": "5.3.2"
   },
