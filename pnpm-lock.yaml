@@ -43,8 +43,8 @@ importers:
         version: 5.3.2
     devDependencies:
       '@types/cron':
-        specifier: 2.0.1
-        version: 2.0.1
+        specifier: 2.4.3
+        version: 2.4.3
       '@types/ioredis':
         specifier: 4.28.10
         version: 4.28.10
@@ -259,8 +259,9 @@ packages:
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
 
-  '@types/cron@2.0.1':
-    resolution: {integrity: sha512-WHa/1rtNtD2Q/H0+YTTZoty+/5rcE66iAFX2IY+JuUoOACsevYyFkSYu/2vdw+G5LrmO7Lxowrqm0av4k3qWNQ==}
+  '@types/cron@2.4.3':
+    resolution: {integrity: sha512-ViRBkoZD9Rk0hGeMdd2GHGaOaZuH9mDmwsE5/Zo53Ftwcvh7h9VJc8lIt2wdgEwS4EW5lbtTX6vlE0idCLPOyA==}
+    deprecated: This is a stub types definition. cron provides its own type definitions, so you do not need this installed.
 
   '@types/ioredis@4.28.10':
     resolution: {integrity: sha512-69LyhUgrXdgcNDv7ogs1qXZomnfOEnSmrmMFqKgt1XMJxmoOSG/u3wYy13yACIfKuMJ8IhKgHafDO3sx19zVQQ==}
@@ -273,9 +274,6 @@ packages:
 
   '@types/luxon@3.3.8':
     resolution: {integrity: sha512-jYvz8UMLDgy3a5SkGJne8H7VA7zPV2Lwohjx0V8V31+SqAjNmurWMkk9cQhfvlcnXWudBpK9xPM1n4rljOcHYQ==}
-
-  '@types/luxon@3.4.2':
-    resolution: {integrity: sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA==}
 
   '@types/node@20.10.6':
     resolution: {integrity: sha512-Vac8H+NlRNNlAmDfGUP7b5h/KA+AtWIzuXy0E6OyP8f1tCLYAtPvKRRDJjAPqhpCb0t6U2j7/xqAuLEebW2kiw==}
@@ -1622,10 +1620,9 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
-  '@types/cron@2.0.1':
+  '@types/cron@2.4.3':
     dependencies:
-      '@types/luxon': 3.4.2
-      '@types/node': 20.10.6
+      cron: 3.1.6
 
   '@types/ioredis@4.28.10':
     dependencies:
@@ -1636,8 +1633,6 @@ snapshots:
   '@types/json5@0.0.29': {}
 
   '@types/luxon@3.3.8': {}
-
-  '@types/luxon@3.4.2': {}
 
   '@types/node@20.10.6':
     dependencies:
