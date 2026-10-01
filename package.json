@@ -33,7 +33,7 @@
     "@sentry/node": "7.92.0",
     "@sentry/tracing": "7.92.0",
     "cat-loggr": "1.2.2",
-    "cron": "3.1.6",
+    "cron": "3.5.0",
     "dbots": "11.0.0",
     "dotenv": "16.3.1",
     "eris": "https://github.com/projectdysnomia/dysnomia#dev",
